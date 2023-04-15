@@ -14,7 +14,7 @@ class Board:
             ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
             ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"]
         ]
-        self.color = BLACK
+        self.color = WHITE
 
     def print_board(self):
         print('     +----+----+----+----+----+----+----+----+')
@@ -62,9 +62,9 @@ class Board:
         elif piece.can_move(row1, col1) and piece.not_piece(self.board, piece, row1, col1):
             self.board[row][col] = "  "
             if piece.get_color() == 1:
-                color = "b"
-            else:
                 color = "w"
+            else:
+                color = "b"
             self.board[row1][col1] = color + piece.char()
             self.color = opponent(self.color)
             return True
@@ -117,7 +117,7 @@ class Pawn(Piece):
     def can_move(self, row, col):
         if self.col != col:
             return False
-        if self.color == BLACK:
+        if self.color == WHITE:
             direction = 1
             start_row = 1
         else:
@@ -345,24 +345,31 @@ def opponent(color):
     return WHITE
 
 
+def w_color(color):
+    if color == "w":
+        return 1
+    return 2
+
+
 def game():
     b = Board()
     while True:
         print(b)
-        if b.color == 2:
+        if b.color == 1:
             print("Ходят белые")
         else:
             print("Ходят черные")
         # Ввежите столбец и строку фигуры, которой хотите сходить, и столбец и строку куда хотите ее поставить
         row, col, row1, col1 = map(int, input().split())
-        piece = b.piece(b.board[row][col], row, col, b.color)
-        print(piece, piece.can_move(row1, col1), piece.not_piece(b.board, piece, row1, col1))
-        if piece.can_move(row1, col1) and piece.not_piece(b.board, piece, row1, col1) and b.board[row1][col1] == "  ":
+        piece = b.piece(b.board[row][col], row, col, w_color(b.board[row][col][0]))
+        print(piece.get_color(), b.color)
+        if piece.can_move(row1, col1) and piece.not_piece(b.board, piece, row1, col1) and b.board[row1][col1] == "  " \
+                and piece.get_color() == b.color:
             b.board[row][col] = "  "
             if piece.get_color() == 1:
-                color = "b"
-            else:
                 color = "w"
+            else:
+                color = "b"
             b.board[row1][col1] = color + piece.char()
             print("OK")
             b.color = opponent(b.color)
@@ -370,5 +377,4 @@ def game():
             print("NOT OK")
 
 
-if __name__ == "__main__":
-    game()
+
